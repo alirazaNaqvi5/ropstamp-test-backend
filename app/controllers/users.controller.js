@@ -26,16 +26,18 @@ const transporter = nodemailer.createTransport({
 const sendMail = (email, password) => {
     
     const mailOptions = {
-        from: 'ropstamp@test.com',
+        from: 'ropstam@test.com',
         to: email,
-        subject: "ROPSTAMP - Email Verification AND Password Reset",
+        subject: "ROPSTAM - Email Verification AND Password Reset",
         text: "Thanks for signing up with ROPSTAMP. your login infor for test web designed by ALi Naqvi is EMAIL: " + email + " PASSWORD: " + password,
     };
     transporter.sendMail(mailOptions, (err, data) => {
         if (err) {
+            console.log(err);
             res.status(500).json({ message: 'Internal Error' });
         } else {
             // res.status(200).json({ message: 'Email sent successfully' });
+            console.log('Email sent successfully', data);
             return password;
         }
     });
