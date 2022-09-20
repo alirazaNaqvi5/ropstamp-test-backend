@@ -23,7 +23,7 @@ exports.findAll = (req, res) => {
 //============================= update car by id ===============================
 exports.update = (req, res) => {
     // get car id from frontend
-    const id = req.body.id;
+    const id = req.body._id;
     // get car details from frontend
     const car = req.body;
 
