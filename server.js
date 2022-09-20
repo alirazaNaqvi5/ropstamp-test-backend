@@ -1,4 +1,3 @@
-// create a server with mongo db and express
 const express = require('express');
 const app = express();
 var bodyParser = require('body-parser');
@@ -12,13 +11,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // serve static folder in base directory uploads > cars
 app.use('/uploads', express.static('uploads'));
 
-
+// allow cors to access api from any origin 
 app.use(cors());
 
 
-const urlencoded = bodyParser.urlencoded({ extended: false })
-
-
+// require db to establish connection to mongodb using mongoose 
+// ==============================================================================
 const db = require("./app/models");
 
 
@@ -36,12 +34,13 @@ db.mongoose
     process.exit();
   });
 
-// ============================== Unprotected Routes ==============================
-// require('./app/routes/email.routes')(app);
+// ============================== Unprotected Routes =========================================================
+
+//  all Auth routes [login , signup, ]
 require('./app/routes/auth.routes')(app);
 
-
 // ============================== JWT token verification middleware configration ==============================
+
 // access token is required to access these routes with parameter x-access-token in header
 app.use(function (req, res, next) {
   res.header(
@@ -53,15 +52,19 @@ app.use(function (req, res, next) {
 
 // using token verification middleware to verify token
 app.use([authJwt.verifyToken]);
+
 // =============================================================================================================
 
+//                                                    Protected Routes
+//                                       car routes [get , create , update , delete]
+//                                      category routes [get , create , update , delete]
+// ============================================== Protected Routes =============================================
 
-// ============================== Protected Routes =============================================================
 require('./app/routes/categories.routes')(app);
 
 require('./app/routes/cars.routes')(app);
 
-
+// =============================================================================================================
 
 
 app.listen(5000, () => {
