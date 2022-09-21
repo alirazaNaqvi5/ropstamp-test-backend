@@ -34,6 +34,12 @@ Above command will start project Locally using nodemon. So, if you make any chan
 
 ## API Reference
 
+#### Static folder serving endpoint
+
+```http
+  GET http://localhost:5000/uploads/cars/<image_file_name>
+```
+
 #### Signup using user details
 
 ```http
