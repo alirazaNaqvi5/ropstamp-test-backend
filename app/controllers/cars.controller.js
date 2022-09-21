@@ -3,7 +3,10 @@ const db = require("../models");
 // get cars model from db parameters
 const cars = db.cars;
 
+//===========================================================================
+
 //============================ get all cars =================================
+
 exports.findAll = (req, res) => {
     // get all cars from db
     cars.find({})
@@ -20,7 +23,10 @@ exports.findAll = (req, res) => {
         });
 };
 
+//==============================================================================
+
 //============================= update car by id ===============================
+
 exports.update = (req, res) => {
     // get car id from frontend
     const id = req.body._id;
@@ -51,7 +57,11 @@ exports.update = (req, res) => {
         });
 };
 
+
+//===================================================================================
+
 //================================== delete car by id ===============================
+
 exports.delete = (req, res) => {
     // get car id from frontend
     const id = req.body.id;
@@ -78,7 +88,10 @@ exports.delete = (req, res) => {
         });
 };
 
+//===============================================================================
+
 //================================== create car =================================
+
 exports.create = (req, res) => {
     // get car details from frontend
     const file = req.file.filename;
@@ -125,7 +138,10 @@ exports.create = (req, res) => {
        
 };
 
+//===========================================================================================
+
 //================================== get car by category name ===============================
+
 exports.findAllByCategory = (req, res) => {
     // get category name from frontend
     const category = req.params.category;
@@ -144,3 +160,6 @@ exports.findAllByCategory = (req, res) => {
             });
         });
 };
+
+
+// ============================================================================================

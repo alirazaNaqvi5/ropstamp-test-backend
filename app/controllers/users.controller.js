@@ -12,7 +12,11 @@ require('dotenv').config();
 // first we need to create a transport object
 // this is the object that will send the email
 // we will use nodemailer to create the transport object
-// =============================== EMAIL ===============================
+
+// =============================== EMAIL SMTP configuration ===============================
+
+// create a transport object using nodemailer to send email to user
+
 const transporter = nodemailer.createTransport({
     host: "smtp-relay.sendinblue.com",
     port: 587,
@@ -23,50 +27,57 @@ const transporter = nodemailer.createTransport({
 });
 
 
+// send emmail to user using nodemailer and smtp configuration
 const sendMail = (email, password) => {
     
+    // generate the email template
     const mailOptions = {
         from: 'ropstam@test.com',
         to: email,
         subject: "ROPSTAM - Email Verification AND Password Reset",
         text: "Thanks for signing up with ROPSTAMP. your login infor for test web designed by ALi Naqvi is EMAIL: " + email + " PASSWORD: " + password,
     };
+
+    // send the email to user
     transporter.sendMail(mailOptions, (err, data) => {
         if (err) {
             console.log(err);
             res.status(500).json({ message: 'Internal Error' });
         } else {
-            // res.status(200).json({ message: 'Email sent successfully' });
             console.log('Email sent successfully', data);
             return password;
         }
     });
+    
     return password;
 }
-// ====================================================================
 
 
+
+// ======================================================================
 
 // =============================== SIGNUP ===============================
 // Create and Save a new user
 exports.create = async (req, res) => {
     
-    // Validate request
+    // Validate request if user not send [email, name, phone]
+// ----------------------------------------------------------------------
     if (!req.body.email || !req.body.name || !req.body.phone) {
         res.status(400).send({ message: "Content can not be empty!" });
         return;
     }
+// ----------------------------------------------------------------------
 
-    // send email to user and get the password
+    // Generate a random password for user
     var pass = (Math.random() + 1).toString(36).substring(2);
     
 
 
-    // encrypt the password
+    // encrypting the password using bcrypt
     password = await bcrypt.hash(pass, 10);
 
 
-    // Create a user
+    // Create a user object to save in db
     const user = new users({
         email: req.body.email,
         password: password,
@@ -78,22 +89,28 @@ exports.create = async (req, res) => {
     user
         .save(user)
         .then(async(data) => {
-            // send email to user
+
+            // send email to user with password and email address if user created successfully
+// --------------------------------------------------------------------------------------------
             await sendMail(req.body.email, pass);
+// --------------------------------------------------------------------------------------------
+
             res.status(200).send(data);
         })
+
+        // if error occured while saving user in db then send error message to client 
         .catch(err => {
-            res.status(500).send({
+            res.send({
                 message:
                     err.message || "Some error occurred while creating the user."
             });
         });
 };
 
+
+
 // =====================================================================
-
 //                     Login API code starts from here
-
 // =============================== LOGIN ===============================
 
 
@@ -132,5 +149,6 @@ exports.login = async (req, res) => {
 
     } });
 
-
 }
+
+// =====================================================================

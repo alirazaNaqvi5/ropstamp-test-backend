@@ -1,9 +1,11 @@
 // get db parameters from models
 const db = require("../models");
-// get categories model from db parameters
+// get categories cars model from db parameters
 const categories = db.categories;
 const cars = db.cars
 
+
+// ================================================================================
 
 
 //============================ get all categories =================================
@@ -23,8 +25,11 @@ exports.getAll = (req, res) => {
         });
 };
 
+// ==================================================================================
+
 
 //============================= update category by id ===============================
+
 exports.update = async (req, res) => {
     // get category id from frontend
     const id = req.body.id;
@@ -37,9 +42,11 @@ exports.update = async (req, res) => {
     //   update all cars with previous category name to new category name 
     cars.updateMany({ category: previous_name }, { category: name })
         .then(data => {
+
             // update category by id
             categories.findByIdAndUpdate(id, { name: name })
                 .then(data => {
+
                     if (!data) {
                         res.status(404).send({
                             message: `Cannot update category with id=${id}. Maybe category was not found!`
@@ -56,6 +63,7 @@ exports.update = async (req, res) => {
                             err.message || "Some error occurred while updating the category."
                     });
                 });
+
         })
         .catch(err => {
             // send error to frontend
@@ -70,8 +78,11 @@ exports.update = async (req, res) => {
 
 
 };
+// =======================================================================================
+
 
 //================================== delete category by id ===============================
+
 exports.delete = (req, res) => {
     // get category id from frontend
     const id = req.body.id;
@@ -97,15 +108,23 @@ exports.delete = (req, res) => {
         });
 };
 
+// =========================================================================================
+
+
 //================================= create category ========================================
+
 exports.create = (req, res) => {
-    // Validate request
+
+    // Validate request if user not send name of category 
+// ------------------------------------------------------------------------------
     if (!req.body.name) {
         res.status(400).send({ message: "Content can not be empty!" });
         return;
     }
+// -------------------------------------------------------------------------------
 
-    // Create a category
+
+    // Create a category in db
     const category = new categories({
         name: req.body.name
     });
@@ -114,10 +133,12 @@ exports.create = (req, res) => {
     category
         .save(category)
         .then(data => {
+
             // send success message to frontend
             res.status(200).send({ message: "Category created successfully." });
         })
         .catch(err => {
+
             // send error to frontend
             res.status(500).send({
                 message:
@@ -126,4 +147,4 @@ exports.create = (req, res) => {
         });
 };
 
-// =====================================================================
+// ===============================================================================================
